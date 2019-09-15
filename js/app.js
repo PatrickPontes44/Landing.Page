@@ -1,20 +1,29 @@
 // DOM ELEMENTS
-const time = document.getElementById('time'),
+let time = document.getElementById('time'),
 greeting = document.getElementById('greeting'),
 name = document.getElementById('name'),
 focus = document.getElementById('focus'),
-amPmBtn = document.getElementById('switch');
-morning = document.getElementById('morning');
-afternoon = document.getElementById('afternoon');
-evening = document.getElementById('evening')
-navBar = document.getElementById('navBar');
-iconBtn = document.getElementById('iconBtn');
-iconBtn2 = document.getElementById('iconBtn2');
-iconBtn3 = document.getElementById('iconBtn3');
+amPmBtn = document.getElementById('switch'),
+morning = document.getElementById('morning'),
+afternoon = document.getElementById('afternoon'),
+evening = document.getElementById('evening'),
+fontInputName = document.getElementById('fontInputName'),
+fontInputURL = document.getElementById('fontInputURL'),
+navBar = document.getElementById('navBar'),
+iconBtn = document.getElementById('iconBtn'),
+iconBtn2 = document.getElementById('iconBtn2'),
+iconBtn3 = document.getElementById('iconBtn3'),
+linkToFont = document.getElementById('fontSetter');
 
 const morningUrl = morning.value = localStorage.getItem('morning_img') ? localStorage.getItem('morning_img') : '';
 const afternoonUrl = afternoon.value = localStorage.getItem('afternoon_img') ? localStorage.getItem('afternoon_img') : '';
 const eveningUrl = evening.value = localStorage.getItem('evening_img') ? localStorage.getItem('evening_img') : '';
+linkToFont.href = fontInputURL.value = localStorage.getItem('fontURL') ? localStorage.getItem('fontURL') : 'https://fonts.googleapis.com/css?family=Open+Sans&display=swap';
+let myFont = fontInputName.value = "'" +localStorage.getItem('fontName')+ "'" ? localStorage.getItem('fontName') : ""; 
+
+if (localStorage.getItem('fontURL') && localStorage.getItem('fontName')) {
+	$('body').css('font-family', myFont + ", sans-serif");
+}
 
 // OPTIONS
 let showAmPm = localStorage.getItem('AM-PM') == 'true' ? true:false;
@@ -163,6 +172,34 @@ function setBgEvening(e){
 	location.reload();
 }
 
+function setFontURL(e){
+	if (e.type === 'keypress') {
+		//MAKE SURE ENTER IS PRESSED
+		if (e.which == 13 || e.keyCode == 13) {
+			localStorage.setItem('fontURL', e.target.value);
+			focus.blur();
+		}
+
+	}else{
+		localStorage.setItem('fontURL', e.target.value);
+	}
+	location.reload();
+}
+
+function setFontName(e){
+	if (e.type === 'keypress') {
+		//MAKE SURE ENTER IS PRESSED
+		if (e.which == 13 || e.keyCode == 13) {
+			localStorage.setItem('fontName', e.target.value);
+			focus.blur();
+		}
+
+	}else{
+		localStorage.setItem('fontName', e.target.value);
+	}
+	location.reload();
+}
+
 
 //LISTENERS
 name.addEventListener('keypress', setName);
@@ -179,6 +216,12 @@ afternoon.addEventListener('blur', setBgAfternoon);
 
 evening.addEventListener('keypress', setBgEvening);
 evening.addEventListener('blur', setBgEvening);
+
+fontInputURL.addEventListener('keypress', setFontURL);
+fontInputURL.addEventListener('blur', setFontURL);
+
+fontInputName.addEventListener('keypress', setFontName);
+fontInputName.addEventListener('blur', setFontName);
 
 
 
@@ -207,7 +250,7 @@ window.addEventListener('load', ()=>{
 
 				const proxy = "https://cors-anywhere.herokuapp.com/";
 
-				const api = `${proxy}https://api.darksky.net//${lat},${long}?lang=pt`;
+				const api = `${proxy}https://api.darksky.net/forecast//${lat},${long}?lang=pt`;
 
 				fetch(api)
 				.then(response =>{
